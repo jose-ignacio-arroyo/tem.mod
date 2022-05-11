@@ -1,0 +1,1825 @@
+
+############################################################ fig1 and its table
+#a. dingha
+#b. esechie 93; 32.1 dS/m
+#c. zakhartsev15
+#d. gutierrez16
+#e. kashefi03
+#f. buck and barnes
+#1.38e-23 boltzmann jk-1, 6.62e-34 planck js-1, 25+273.15=298.15 k
+library(minpack.lm);z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; 
+
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+#67, 60, 107, 83, 49, 64                                                
+
+cbind.fill <- function(...){
+    nm <- list(...) 
+    nm <- lapply(nm, as.matrix)
+    n <- max(sapply(nm, nrow)) 
+    do.call(cbind, lapply(nm, function (x) 
+        rbind(x, matrix(, n-nrow(x), ncol(x))))) 
+}
+
+#p=read.delim("data1",h=T);q=read.delim("data2",h=T)
+
+p=cbind.fill(p[,67],p[,60],p[,107],p[,83],p[,49],p[,64],fill=NA)
+q=cbind.fill(q[,67],q[,60],q[,107],q[,83],q[,49],q[,64],fill=NA)
+
+#colnames(p)[52]
+x=1/(p+273.15);y=log(q);y[y==-Inf]=NA;y[y==Inf]=NA
+
+
+#pdf('figure-1.pdf')
+par(mfrow=c(4,4));par(mar=c(2,2,2,2))
+for (i in 1:6){tryCatch({
+    x2=x[,i];y2=y[,i];
+loglin<- nlsLM(y2~-a*log(x2)-b*x2+c,start=list(a=1,b=1,c=1));xc=seq(min(x2,na.rm=TRUE),max(x2,na.rm=TRUE),0.0000001)
+    plot(x2,y2,ylim=c(min(y[,i],na.rm=T),max(y[,i],na.rm=T)),xlim=c(min(x[,i],na.rm=T),max(x[,i],na.rm=T)))
+    par(new=TRUE)
+    plot(xc,z.v2(coef(loglin),xc),type="l",lwd="1",xlab="",ylab="",ylim=c(min(y[,i],na.rm=T),max(y[,i],na.rm=T)),xlim=c(min(x[,i],na.rm=T),max(x[,i],
+    na.rm=T)),axes=F,ann=F)
+    }, error= function(e) {cat("Error", "\n")},
+    warning= function(w) {cat("Warning", "\n")})
+}
+#dev.off()
+#################### parameters of the six examples
+
+
+out=NULL
+for (i in 1:ncol(q)){
+tryCatch(
+{
+x=1/(p[,i]+273.15);y=8.31*log(q[,i])
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+x2=log(x); summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+pvals=data.frame(
+summary(loglin)$coefficients[1,1],                          #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+c,                                                          #c                    
+summary(loglin)$coefficients[3,4],                          #p-value_c
+r2                                                          #r2
+)
+    out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+            },
+            error = function(e){
+            message("* Caught an error on itertion ", i)
+            print(e)
+        }
+   )
+
+}
+
+colnames(out)=c("a","pvalue_a","b","pvalue_b","c","pvalue_c","r2")
+out
+write.table(out,file="table_params.fig1.txt")
+
+
+
+
+
+################################################ supplementary table s2
+
+
+
+############################################ for enzymes
+
+
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads dat awith empty cells
+df2=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:29,3:244];p=t(p);#colnames(p)=df1$V2[1:29]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:29,3:244];q=t(q);#colnames(q)=df2$V2[1:29]
+
+out=NULL
+for (i in 1:ncol(p)){
+tryCatch({
+
+x=1/(p[,i]+273.15);y=8.31*log(q[,i]/(p[,i]+273.15));y[y==-Inf]=NA;y[y==Inf]=NA
+
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+
+#multiple linear regression to fit the model
+x2=log(x)
+summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+c,                          				    #c
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+
+out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+}, error = function(msg){
+            return("Error")
+        })          
+   
+
+}
+out.enzymes=out
+
+
+############################################# for above molecular levels
+
+
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+p=read.delim("data1",h=F);                         #the "read.delim" function reads dat awith empty cells
+q=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[30:128,3:244];p=t(p);#colnames(p)=df1$V2[30:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[30:128,3:244];q=t(q);#colnames(q)=df2$V2[30:128]
+
+
+
+out=NULL
+for (i in 1:ncol(q)){
+tryCatch(
+{
+x=1/(p[,i]+273.15);y=8.31*log(q[,i])
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+
+#multiple linear regression to fit the model
+x2=log(x)
+summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+c,                          				#c
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+    out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+            },
+            error = function(e){
+            message("* Caught an error on itertion ", i)
+            print(e)
+        }
+   )
+
+}
+out.aboveenzymes=out
+
+out=rbind(out.enzymes,out.aboveenzymes)
+
+
+write.table(out,file="output-parameters.txt",row.names=F)
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$organization_level,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$organization_level,r$taxonomic_domain, decreasing=F),]
+rownames(out)=NULL
+write.table(out,file="output-parameters_bylevel&taxa.txt",row.names=F)
+
+################### subsampling number of studies to check how varies the mean with number of studies
+
+#delta_c=out[,1]
+#r=NULL;for(i in 1:nrow(out)){
+#mdc=mean(sample(delta_c,i))
+#r=cbind(r,mdc)
+#}
+#r=as.vector(r);it=1:nrow(out)
+#plot(it,r,type='l')
+
+#now plotting the cummulative sd of the mean
+#s=NULL
+#for (i in 1:118){
+#sdmc=sd(c(r[i],r[i+1]))/sqrt(2)
+#s=cbind(s,sdmc)
+#}
+#s=as.vector(s)
+#it=it-1
+#plot(it,s,type='l')
+
+######################### summary of values for concave
+                                                               #concave 1:96, convex 97:128
+
+out=rbind(out.enzymes,out.aboveenzymes)
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),] #r$concavity,
+rownames(out)=c(1:nrow(out))
+out=out[1:96,4:10] #for concave curves
+#out=out[102:118,4:10] #for convex curves
+
+
+
+a=c(min(out[,1],na.rm=T),
+max(out[,1],na.rm=T),
+median(out[,1],na.rm=T),IQR(out[,1]),
+mean(out[,1],na.rm=T),
+(sd(out[,1])/sqrt(length(out[,1])))
+)
+b=c(min(out[,3],na.rm=T),
+max(out[,3],na.rm=T),
+median(out[,3],na.rm=T),IQR(out[,3]),
+mean(out[,3],na.rm=T),
+(sd(out[,3])/sqrt(length(out[,3])))
+)
+
+c=c(min(out[,5],na.rm=T),
+max(out[,5],na.rm=T),
+median(out[,5],na.rm=T),IQR(out[,5]),
+mean(out[,5],na.rm=T),
+(sd(out[,5])/sqrt(length(out[,5])))
+)
+
+d=c(min(out[,7],na.rm=T),
+max(out[,7],na.rm=T),
+median(out[,7],na.rm=T),IQR(out[,7]),
+mean(out[,7],na.rm=T),
+(sd(out[,7])/sqrt(length(out[,7])))
+)
+
+p=cbind(out[,2],out[,4],out[,6])
+
+pvalue=c(min(p,na.rm=T),
+max(p,na.rm=T),
+median(p,na.rm=T),IQR(p,na.rm=T),
+mean(p,na.rm=T),
+(sd(p,na.rm=T)/sqrt(length(p)))
+)
+
+
+
+df_concaves=data.frame(a,b,c,d,pvalue, row.names=c('min','max','median','iqr','mean','se'))
+colnames(df_concaves)=c("a","b","ln_Y_0","r2","pvalue")
+df_concaves
+write.table(df_concaves,file="tables2_output.means.concavecurves.txt")
+
+#########################   convex curves
+
+
+out=rbind(out.enzymes,out.aboveenzymes)
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),] #r$concavity,
+rownames(out)=c(1:nrow(out))
+
+#out=out[1:101,4:10 #for concave curves
+out=out[97:128,4:10] #for convex curves
+
+a=c(min(out[,1],na.rm=T),
+max(out[,1],na.rm=T),
+median(out[,1],na.rm=T),IQR(out[,1]),
+mean(out[,1],na.rm=T),
+(sd(out[,1])/sqrt(length(out[,1])))
+)
+b=c(min(out[,3],na.rm=T),
+max(out[,3],na.rm=T),
+median(out[,3],na.rm=T),IQR(out[,3]),
+mean(out[,3],na.rm=T),
+(sd(out[,3])/sqrt(length(out[,3])))
+)
+
+c=c(min(out[,5],na.rm=T),
+max(out[,5],na.rm=T),
+median(out[,5],na.rm=T),IQR(out[,5]),
+mean(out[,5],na.rm=T),
+(sd(out[,5])/sqrt(length(out[,5])))
+)
+
+d=c(min(out[,7],na.rm=T),
+max(out[,7],na.rm=T),
+median(out[,7],na.rm=T),IQR(out[,7]),
+mean(out[,7],na.rm=T),
+(sd(out[,7])/sqrt(length(out[,7])))
+)
+
+p=cbind(out[,2],out[,4],out[,6])
+
+Ps=c(min(p,na.rm=T),
+max(p,na.rm=T),
+median(p,na.rm=T),IQR(p,na.rm=T),
+mean(p,na.rm=T),
+(sd(p,na.rm=T)/sqrt(length(p)))
+)
+
+
+
+df_convexes=data.frame(a,b,c,d,Ps, row.names=c('min','max','median','iqr','mean','se'))
+colnames(df_convexes)=c("a","b","ln_Y_0","r2","pvalue")
+df_convexes
+write.table(df_convexes,file="tables2_output.means.convexcurves.txt")
+
+
+
+
+
+
+################################################ anovas to assess differences in parameters among levels of factors
+################################################ tested only for concave curves
+
+
+
+######### histograms of the distributions of parameter values
+
+
+
+
+
+######################################                summaries by taxa/level                         table s3, s4
+###########################################################CONCAVE
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+
+dc=dc[order(dc$concavity),]
+dc=dc[1:96,]
+
+
+##########################   by taxa                                                   TABLE S3 CONCAVE
+
+
+options(digits=4)
+library(dplyr)
+d1<-dc %>%
+group_by(taxonomic_domain) %>%
+summarize(mean_c=mean(summary.loglin..coefficients.1..1.),mean_h=mean(summary.loglin..coefficients.2..1.),mean_s0=mean(c),
+sd_c=sd(summary.loglin..coefficients.1..1.),sd_h=sd(summary.loglin..coefficients.2..1.),sd_s0=sd(c))
+
+d1_n<-dc %>%
+group_by(taxonomic_domain) %>%
+summarize(n())
+
+#here, from the tibbles we build a dataframe, but this time estimating the standard errors:
+
+df=cbind(d1$mean_c,d1$sd_c/sqrt(d1_n$'n()'),d1$mean_h,d1$sd_h/sqrt(d1_n$'n()'),d1$mean_s0,d1$sd_s0/sqrt(d1_n$'n()'))
+
+df #this is the supp table s3
+df_s3_concave=as.data.frame(df)
+colnames(df_s3_concave)=c("C","s.e.C","H","s.e.H","c","s.e.c")
+rownames(df_s3_concave)=d1_n$taxonomic_domain
+write.table(df_s3_concave,file="supp.table.s3-conc.txt")
+
+#######################################by level                                    TABLE S4 CONCAVE
+d2=dc %>%
+group_by(organization_level) %>%
+summarize(mean_c=mean(summary.loglin..coefficients.1..1.),mean_h=mean(summary.loglin..coefficients.2..1.),mean_s0=mean(c),
+sd_c=sd(summary.loglin..coefficients.1..1.),sd_h=sd(summary.loglin..coefficients.2..1.),sd_s0=sd(c))
+
+d2_n<-dc %>%
+group_by(organization_level) %>%
+summarize(n())
+
+df2=cbind(d2$mean_c,d2$sd_c/sqrt(d2_n$'n()'),d2$mean_h,d2$sd_h/sqrt(d2_n$'n()'),d2$mean_s0,d2$sd_s0/sqrt(d2_n$'n()'))
+
+df2#this is supp table s4
+#add colnames
+df2_s4_concave=as.data.frame(df2)
+colnames(df2_s4_concave)=c("C","s.e.C","H","s.e.H","c","s.e.c")
+rownames(df2_s4_concave)=d2_n$organization_level
+write.table(df2_s4_concave,file="supp.table.s4-conc.txt")
+
+#################################################################### CONVEX
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+
+dc=dc[order(dc$concavity),]
+dc=dc[97:128,]
+
+
+##########################   anova by taxa                                    TABLE S3 CONVEX
+
+
+options(digits=4)
+library(dplyr)
+d1<-dc %>%
+group_by(taxonomic_domain) %>%
+summarize(mean_c=mean(summary.loglin..coefficients.1..1.),mean_h=mean(summary.loglin..coefficients.2..1.),mean_s0=mean(c),
+sd_c=sd(summary.loglin..coefficients.1..1.),sd_h=sd(summary.loglin..coefficients.2..1.),sd_s0=sd(c))
+
+d1_n<-dc %>%
+group_by(taxonomic_domain) %>%
+summarize(n())
+
+#here, from the tibbles we build a dataframe, but this time estimating the standard errors:
+
+df=cbind(d1$mean_c,d1$sd_c/sqrt(d1_n$'n()'),d1$mean_h,d1$sd_h/sqrt(d1_n$'n()'),d1$mean_s0,d1$sd_s0/sqrt(d1_n$'n()'))
+
+df #this is the supp table s3
+df_s3_convex=as.data.frame(df)
+colnames(df_s3_convex)=c("C","s.e.C","H","s.e.H","c","s.e.c")
+rownames(df_s3_convex)=d1_n$taxonomic_domain
+write.table(df_s3_convex,file="supp.table.s3-conv.txt")
+
+#######################################by level                             TABLE S4 CONVEX
+d2=dc %>%
+group_by(organization_level) %>%
+summarize(mean_c=mean(summary.loglin..coefficients.1..1.),mean_h=mean(summary.loglin..coefficients.2..1.),mean_s0=mean(c),
+sd_c=sd(summary.loglin..coefficients.1..1.),sd_h=sd(summary.loglin..coefficients.2..1.),sd_s0=sd(c))
+
+d2_n<-dc %>%
+group_by(organization_level) %>%
+summarize(n())
+
+df2=cbind(d2$mean_c,d2$sd_c/sqrt(d2_n$'n()'),d2$mean_h,d2$sd_h/sqrt(d2_n$'n()'),d2$mean_s0,d2$sd_s0/sqrt(d2_n$'n()'))
+
+df2#this is supp table s4
+#add colnames
+df2_s4_convex=as.data.frame(df2)
+colnames(df2_s4_convex)=c("C","s.e.C","H","s.e.H","c","s.e.c")
+rownames(df2_s4_convex)=d2_n$organization_level
+write.table(df2_s4_convex,file="supp.table.s4-conv.txt")
+
+
+
+
+
+df_s3_concave
+df_s3_convex
+
+df2_s4_concave
+df2_s4_convex
+
+
+
+
+
+############                                                          ###### table s5 ANOVAs concaves and convexes
+
+#to implement the two-way anova we can do
+#y~x1*x2 or
+#x1+x2+x1:x2
+           #########################heat capacity
+library(DescTools)
+###concave
+
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.csv("refs.csv")
+#r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[1:96,]
+dc[,'taxonomic_domain_factor']<-as.factor(dc[,'taxonomic_domain_factor'])
+dc[,'organization_level_factor']<-as.factor(dc[,'organization_level_factor'])
+
+
+#organization level and taxonomic domain
+
+y1=dc$summary.loglin..coefficients.1..1.
+x1=dc$taxonomic_domain_factor
+x2=dc$organization_level_factor
+summary(aov(y1~x1+x2+x1:x2));
+
+####convex
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[97:128,]
+
+#organization level and taxonomic domain
+summary(aov(dc[,1]~dc[,10]));
+summary(aov(dc[,1]~dc[,14]));
+summary(aov(dc[,1]~dc[,10]*dc[,14]));
+
+
+           #########################enthalpy
+###concave
+
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[1:96,]
+
+#organization level and taxonomic domain
+summary(aov(dc[,3]~dc[,10]));
+summary(aov(dc[,3]~dc[,14]));
+summary(aov(dc[,3]~dc[,10]*dc[,14]));
+
+####convex
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[97:128,]
+
+#organization level and taxonomic domain
+summary(aov(dc[,3]~dc[,10]));
+summary(aov(dc[,3]~dc[,14]));
+summary(aov(dc[,3]~dc[,10]*dc[,14]));
+
+
+
+           #########################entropy at a reference temperature
+###concave
+
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[1:96,]
+
+#organization level and taxonomic domain
+summary(aov(dc[,5]~dc[,10]));
+summary(aov(dc[,5]~dc[,14]));
+summary(aov(dc[,5]~dc[,10]*dc[,14]));
+
+####convex
+out=rbind(out.enzymes,out.aboveenzymes)
+o=out;
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+dc=cbind(o,r)                                        #dataframe with metadata
+dc=dc[order(dc$concavity),]
+dc=dc[97:128,]
+
+#organization level and taxonomic domain
+summary(aov(dc[,5]~dc[,10]));
+summary(aov(dc[,5]~dc[,14]));
+summary(aov(dc[,5]~dc[,10]*dc[,14]));
+
+
+################################################################### table s6
+write.table(df,file="table.sup.s6.txt")
+
+#svg("conductivity-parameters-plot.svg")
+par(mfrow=c(4,4));par(mar=c(2,2,2,2))
+plot(y1~x);abline(lm(y1~x))
+plot(y2~x);abline(lm(y2~x))
+plot(y3~x);abline(lm(y3~x))
+#dev.off()
+
+
+#more examples fo the change of temperature ensitivity with different variables (e.g. pH) 
+#Functional properties of the biomass of three microalgal species
+#Determination of Cardinal Temperatures of Flax-leaf Alyssum (Alyssum linifolium) in Response to Salinity, pH, and Drought Stress
+#Screening, purification and characterization of cellulase from cellulase producing bacteria in molasses
+#The PE16 (Rv1430) of Mycobacterium tuberculosis Is an Esterase Belonging to Serine Hydrolase Superfamily of Proteins
+#CHARACTERIZATION OF FREE AND IMMOBILIZED INVERTASE REGARDING ACTIVITY AND ENERGY OF ACTIVATION
+
+
+
+
+#######################################################################################################################################################################
+################################################# data collapse code #not separated for enzyme/above-enzyme
+
+#################################################
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+
+
+#gas constant: kJ/(mol*K)= 8.31445e-3=0.00831445
+#1.38e-23 boltzmann jk-1
+#6.62e-34 planck js-1
+#8.3144621e-5= m3 bar K−1 mol−1
+#8.205746e−5 m3 atm K−1 mol−1 
+
+out=NULL
+for (i in 1:ncol(p)){
+tryCatch({
+
+x=1/(p[,i]+273.15);y=log(q[,i]);y[y==-Inf]=NA;y[y==Inf]=NA
+#x=1/(p[,i]+273.15);y=log(q[,i]/(p[,i]+273.15))
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+
+#multiple linear regression to fit the model
+x2=log(x)
+#summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+#delta_S_0=c+(a*log(298.15))-log(1.38e-23/6.62e-34)
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+#delta_S_0,
+c,                          				#entropy at a reference temperature
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+
+out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+}, error = function(msg){
+            return("Error")
+        })          
+   
+
+}
+
+
+#################################################   data collapse concave
+
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+rownames(out)=NULL
+
+peak=out
+peak=peak[1:96,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+
+out=out[1:96,4:6] #for concave curves
+#out=out[102:118,4:6] #for convex curves
+d=out;
+
+
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[1:96,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[1:96,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+opt=(-d[,1]/d[,2]);a=d[,1];b=d[,2];log.c=d[,3]
+
+s_ys=NULL                
+    for (i in 1:nrow(d)){
+s_y=(-a[i]*log(opt[i])/a[i])+((-log(q[,i])+log.c[i])/a[i])-((b[i]*opt[i])/a[i])   #gbw's                          
+#s_y=log(d[i,2]/-d[i,1])+((log(q[,i])-d[i,3])/-d[i,1])                          #jia's
+
+    s_ys[i]=list(s_y)                
+}
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+
+x=1/(p+273.15)
+s_xs=NULL                
+for (i in 1:nrow(d)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)            
+
+#svg('fig2colllllapse.svg')
+par(mfrow=c(2,2));par(mar=c(2,2,2,2))
+for (i in 1:95){plot(s_ys.df[,i]~s_xs.df[,i],
+ylim=c(min(s_ys.df,na.rm=T),max(s_ys.df,na.rm=T)),xlim=c(min(s_xs.df,na.rm=T),max(s_xs.df,na.rm=T)),pch=0,col=1);par(new=T)}
+
+for (i in 96:96){plot(s_ys.df[,i]~s_xs.df[,i],
+ylim=c(min(s_ys.df,na.rm=T),max(s_ys.df,na.rm=T)),xlim=c(min(s_xs.df,na.rm=T),max(s_xs.df,na.rm=T)),pch=0,col=1)}
+
+
+####################################################################################### convex
+
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+
+
+#gas constant: kJ/(mol*K)= 8.31445e-3=0.00831445
+#1.38e-23 boltzmann jk-1
+#6.62e-34 planck js-1
+#8.3144621e-5= m3 bar K−1 mol−1
+#8.205746e−5 m3 atm K−1 mol−1 
+
+out=NULL
+for (i in 1:ncol(p)){
+tryCatch({
+
+x=1/(p[,i]+273.15);y=log(q[,i]);y[y==-Inf]=NA;y[y==Inf]=NA
+#x=1/(p[,i]+273.15);y=log(q[,i]/(p[,i]+273.15))
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+
+#multiple linear regression to fit the model
+x2=log(x)
+#summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+#delta_S_0=c+(a*log(298.15))-log(1.38e-23/6.62e-34)
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+#delta_S_0,
+c,                          				#entropy at a reference temperature
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+
+out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+}, error = function(msg){
+            return("Error")
+        })          
+   
+
+}
+
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+rownames(out)=NULL
+
+peak=out
+peak=peak[97:128,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+
+out=out[97:128,4:6] #for convex curves
+
+d=out;
+
+
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[97:128,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[97:128,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+opt=(-d[,1]/d[,2]);a=d[,1];b=d[,2];log.c=d[,3]
+
+s_ys=NULL                
+    for (i in 1:nrow(d)){
+s_y=-(-a[i]*log(opt[i])/a[i])-((-log(q[,i])+log.c[i])/a[i])+((b[i]*opt[i])/a[i])   #gbw's                          
+#s_y=log(d[i,2]/-d[i,1])+((log(q[,i])-d[i,3])/-d[i,1])                          #jia's
+
+    s_ys[i]=list(s_y)                
+}
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+
+
+x=1/(p+273.15)
+s_xs=NULL                
+for (i in 1:nrow(d)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)            
+
+#svg('fig2colllllapse.svg')
+#par(mfrow=c(2,2));par(mar=c(2,2,2,2))
+for (i in 1:96){plot(s_ys.df[,i]~s_xs.df[,i],
+ylim=c(min(s_ys.df,na.rm=T),max(s_ys.df,na.rm=T)),xlim=c(min(s_xs.df,na.rm=T),max(s_xs.df,na.rm=T)),pch=0,col=1);par(new=T)}
+
+
+#######################################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################# data collapse #for fig. 2
+
+#################################################
+
+#################################################
+
+#################################################
+
+
+
+
+################################################# here is the data fit for the parameters of the data collapse
+################################################# enzyme level
+
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:29,3:244];p=t(p);colnames(p)=df1$V2[1:29]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:29,3:244];q=t(q);colnames(q)=df2$V2[1:29]
+
+
+
+#gas constant: kJ/(mol*K)= 8.31445e-3=0.00831445
+#1.38e-23 boltzmann jk-1
+#6.62e-34 planck js-1
+#8.3144621e-5= m3 bar K−1 mol−1
+#8.205746e−5 m3 atm K−1 mol−1 
+
+out=NULL
+for (i in 1:ncol(p)){
+tryCatch({
+
+x=1/(p[,i]+273.15);y=log(q[,i]/(p[,i]+273.15));y[y==-Inf]=NA;y[y==Inf]=NA
+#x=1/(p[,i]+273.15);y=log(q[,i]/(p[,i]+273.15))
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+
+#multiple linear regression to fit the model
+x2=log(x)
+#summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+#delta_S_0=c+(a*log(298.15))-log(1.38e-23/6.62e-34)
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+#delta_S_0,
+c,                          				#entropy at a reference temperature
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+
+out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+}, error = function(msg){
+            return("Error")
+        })          
+   
+
+}
+out.enzymes=out
+
+
+############################################# for above molecular levels
+
+
+library(minpack.lm);z = function(params, x) {-params[1]*log(x)-params[2]*x+params[3]}
+z.v2=function(params, x){-params[1]*log(x)-params[2]*x+params[3]}; #x=1/(x+273.15);y=8.31*log((y*6.62e-34)/((x+273.15)*1.38e-23))
+
+# to estimate the PARAMETERS of the loglin fitted curves
+p=read.delim("data1",h=F);                         #the "read.delim" function reads dat awith empty cells
+q=read.delim("data2",h=F);
+
+#here I have to i) sort by "generic variable", ii) extract the subdataframe of "enzyme reaction rate" and define again the p and q dataframes 
+#then use different equations to fit the parameters for enzymes and above molecular level 
+#newdata <- mtcars[order(mpg),]
+
+
+
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[30:128,3:244];p=t(p);colnames(p)=df1$V2[30:128];rownames(p)=NULL
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[30:128,3:244];q=t(q);colnames(q)=df2$V2[30:128];rownames(q)=NULL
+
+out=NULL
+for (i in 1:ncol(q)){
+tryCatch(
+{
+x=1/(p[,i]+273.15);y=log(q[,i])
+
+loglin<- nlsLM(y~-a*log(x)-b*x+c,start=list(a=1,b=1,c=1))
+#multiple linear regression to fit the model
+x2=log(x)
+summary(lm(y~x+x2))
+r2=summary(lm(y~x+x2))$r.squared
+summary(lm(y~x+x2))$coefficients[2,4]#p value of x
+pvalue.mlr=summary(lm(y~x+x2))$coefficients[3,4]#p value of x2
+a=summary(loglin)$coefficients[1,1]
+b=summary(loglin)$coefficients[2,1]
+c=summary(loglin)$coefficients[3,1]
+#delta_S_0=c+(a*log(298.15))-log(1.38e-23/6.62e-34)
+pvals=data.frame(summary(loglin)$coefficients[1,1],             #a
+summary(loglin)$coefficients[1,4],                          #p-value_a
+summary(loglin)$coefficients[2,1],                          #b
+summary(loglin)$coefficients[2,4],                          #p-value_b
+#delta_S_0,
+c,                          				    #entropy at a reference temperature
+summary(loglin)$coefficients[3,4],                          #p-value_c
+#cor(z(coef(loglin),x),y,use = "na.or.complete")            #cor_obse_y-pred_y
+r2
+)
+    out=rbind(out,pvals) #2,3 y cor(z(coef(loglin),x),y,use = "na.or.complete"); aqui se selecciona el parametro que queremos anotar
+            },
+            error = function(e){
+            message("* Caught an error on itertion ", i)
+            print(e)
+        }
+   )
+
+}
+out.aboveenzymes=out
+
+out=rbind(out.enzymes,out.aboveenzymes)
+
+
+
+#################################################   data collapse concave enzyme ok
+
+out=rbind(out.enzymes,out.aboveenzymes)
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+rownames(out)=NULL
+
+peak=out
+peak=peak[1:19,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+
+out=out[1:19,4:6] #for concave curves
+#out=out[102:118,4:6] #for convex curves
+d=out;
+
+
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[1:19,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[1:19,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+
+s_ys=NULL                
+    for (i in 1:nrow(d)){
+    s_y=log(d[i,2]/-d[i,1])+((log(q[,i]/(p[,i]+273.15))-d[i,3])/-d[i,1])
+    s_ys[i]=list(s_y)                
+}
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+
+
+x=1/(p+273.15)
+s_xs=NULL                
+for (i in 1:nrow(d)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)            
+
+#svg('datacollapse_v1.svg')
+par(mfrow=c(4,4));par(mar=c(2,2,2,2))
+for (i in 1:2){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=1);par(new=T)}
+for (i in 3:5){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=2);par(new=T)}
+for (i in 6:6){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=4);par(new=T)}
+for (i in 7:11){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=5);par(new=T)}
+for (i in 12:18){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=3);par(new=T)}
+for (i in 19:19){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=0,col=7);par(new=T)}
+
+library(minpack.lm);library(kimisc)
+z2=function(params, x){
+params[1]*log(x)-params[2]*x
+}
+xc=seq(0.82375,1.2,0.00001)
+plot(xc,z2(c(1,1),xc),ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),type="l",lwd="1",axes=F,ann=F)
+
+
+
+
+
+#################################################   data collapse concave-above molecular ok # but must be checked; --at least--6 and 7 do not collapse
+
+#the out of the analysis have the pvalues and rsqs
+
+out=rbind(out.enzymes,out.aboveenzymes)
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+rownames(out)=NULL
+
+
+peak=out
+peak=peak[20:96,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+
+
+
+out=out[20:96,4:6] #for concave curves
+#out=out[102:118,4:6] #for convex curves
+d=out;
+
+
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[20:96,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[20:96,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+
+s_ys=NULL                
+    for (i in 1:nrow(d)){
+    s_y=log(d[i,2]/-d[i,1])+((log(q[,i])-d[i,3])/-d[i,1])
+    s_ys[i]=list(s_y)                
+}
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+s_ys.df<-as.data.frame(s_ys.df)
+
+x=1/(p+273.15)
+s_xs=NULL                
+for (i in 1:nrow(d)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)            
+
+#define forms and colors for variables and taxa respectively 
+#https://www.statmethods.net/advgraphs/parameters.html
+#1:5     enzyme
+#6:14    metabolic rate
+#15      pop density
+#16:20   pop growth
+#21:26   total abundance
+#27:34   richness
+#35:39   ecoflux
+#40:44 others
+
+s_ys.df[,6:7]=NULL
+s_xs.df[,6:7]=NULL
+
+#concave above
+#svg('fig2collapse.svg')
+#par(mfrow=c(4,4));par(mar=c(2,2,2,2))
+for (i in 1:1){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=1,col=1);par(new=T)}
+for (i in 2:2){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=2,col=1);par(new=T)}
+for (i in 3:3){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=3,col=1);par(new=T)}
+for (i in 4:13){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=4,col=1);par(new=T)}
+for (i in 14:16){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=4,col=2);par(new=T)}
+for (i in 17:17){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=19,col=2);par(new=T)}
+for (i in 18:18){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=5,col=2);par(new=T)}
+for (i in 19:26){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=7,col=2);par(new=T)}
+for (i in 27:34){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=8,col=2);par(new=T)}
+for (i in 34:40){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=8,col=4);par(new=T)}
+for (i in 41:41){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=10,col=4);par(new=T)}
+for (i in 42:43){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=11,col=4);par(new=T)}
+for (i in 44:50){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=12,col=4);par(new=T)}
+for (i in 51:58){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=13,col=4);par(new=T)}
+for (i in 59:60){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=15,col=4);par(new=T)}
+for (i in 61:66){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=15,col=5);par(new=T)}
+for (i in 67:73){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=15,col=3);par(new=T)}
+for (i in 74:77){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),pch=8,col=7);par(new=T)}
+
+
+library(minpack.lm);library(kimisc)
+z2=function(params, x){
+params[1]*log(x)-params[2]*x
+}
+xc=seq(0.82375,1.2,0.00001)
+plot(xc,z2(c(1,1),xc),ylim=c(-1.02,-0.996),xlim=c(0.8,1.2),type="l",lwd="1",axes=F,ann=F)
+
+
+
+
+
+############################################ data collapse convex above-mol OK
+
+
+
+
+out=rbind(out.enzymes,out.aboveenzymes)
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),] #r$concavity,
+rownames(out)=c(1:nrow(out))
+
+peak=out
+peak=peak[107:128,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+#out=out[1:101,4:6] #for concave curves
+out=out[107:128,4:6] #for convex curves
+d=out;
+
+
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[107:128,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[107:128,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+
+s_ys=NULL
+    for (i in 1:ncol(p)){
+    #s_y=log(d[i,2]/-d[i,1])+((log(q[,i])+d[i,3])/-d[i,1])   #scaled rate; ln(p_0)=d[,3]
+    #s_y=((1/-d[i,1])*d[i,3])-log(d[i,2]/-d[i,1])-((1/-d[i,1])*log(q[,i]))
+
+     s_y=-log(d[i,2]/-d[i,1])-((1/-d[i,1])*log(q[,i]))+((1/-d[i,1])*d[i,3])
+
+     s_ys[i]=list(s_y)                
+}
+
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+
+
+x=1/(p+273.15);s_xs=NULL                
+for (i in 1:ncol(p)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])                                                        #scaled inverse temperature
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)  
+    
+#vir black, bac gray, arc blue, un euk red, ecto green, endo brown
+#blood flow (met rat) 18, energy consump '-', gen tim 17, mortali 18, mutat 'O', time 10
+
+#u-shaped data
+#svg('fig2b.svg');par(mfrow=c(4,4));par(mar=c(2,2,2,2))
+
+
+for (i in 1:2){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=16,col=4);par(new=T)}
+for (i in 3:8){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=8,col=4);par(new=T)}
+for (i in 9:10){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=18,col=5);par(new=T)}
+for (i in 11:15){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=9,col=5);par(new=T)}
+for (i in 16:17){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=14,col=7);par(new=T)}
+
+library(minpack.lm);library(kimisc)
+z2=function(params, x){
+-params[1]*log(x)+params[2]*x
+}
+xc=seq(0.92,1.085,0.00001)
+plot(xc,z2(c(1,1),xc),ylim=c(0.9995,1.004),xlim=c(0.92,1.085),type="l",lwd="1",axes=F,ann=F)
+
+#dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################ data collapse convex enzyme level ok
+
+out=rbind(out.enzymes,out.aboveenzymes)
+out=as.data.frame(cbind(out[,1],out[,3],out[,5]))
+
+
+options(digits=5)   
+library(minpack.lm);library(dplyr)
+z = function(params, x) {
+-params[1]*log(x)-params[2]*x+params[3]
+}
+df1=read.delim("data1",h=F);                         #the "read.delim" function reads data with empty cells
+df2=read.delim("data2",h=F);
+
+df1 <- df1[order(df1$V1,df1$V2),];p=df1[1:128,3:244];p=t(p);colnames(p)=df1$V2[1:128]
+df2 <- df2[order(df2$V1,df2$V2),];q=df2[1:128,3:244];q=t(q);colnames(q)=df2$V2[1:128]
+
+r=read.delim('refs',h=T);r=r[order(r$Generic.variable,r$auhor.and.year),]
+
+out=cbind(r$concavity,r$Generic.variable,r$taxonomic_domain,out)
+out=out[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),] #r$concavity,
+rownames(out)=c(1:nrow(out))
+
+peak=out
+peak=peak[97:106,];rownames(peak)=NULL;peak
+colnames(peak)=c("curv","vari","taxa","a","b","s0")
+peak=peak[order(peak$taxa, decreasing=F),];rownames(peak)=NULL;peak
+
+
+out=out[97:106,4:6] #for concave curves
+d=out
+
+p=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,p);p=t(p); 
+out1=NULL
+for (i in 1:nrow(p)){
+pp=as.numeric(p[i,])
+out1=rbind(out1,pp)
+
+}
+p=out1
+p=p[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),];
+p=p[97:106,4:ncol(p)];p=t(p);
+
+q=rbind(r$concavity,r$Generic.variable,r$taxonomic_domain,q);q=t(q);
+out1=NULL
+for (i in 1:nrow(q)){
+qq=as.numeric(q[i,])
+out1=rbind(out1,qq)
+}
+q=out1
+q=q[order(r$concavity,r$Generic.variable,r$taxonomic_domain, decreasing=F),]
+q=q[97:106,4:ncol(q)];q=t(q);
+
+p=as.data.frame(p)
+q=as.data.frame(q)
+
+
+s_ys=NULL
+    for (i in 1:ncol(p)){
+    #s_y=log(d[i,2]/-d[i,1])+((log(q[,i])+d[i,3])/-d[i,1])   #scaled rate; ln(p_0)=d[,3]
+    #s_y=((1/-d[i,1])*d[i,3])-log(d[i,2]/-d[i,1])-((1/-d[i,1])*log(q[,i]))
+
+     s_y=-log(d[i,2]/-d[i,1])-((1/-d[i,1])*log(q[,i]/(273.15+p[,i])))+((1/-d[i,1])*d[i,3])
+
+     s_ys[i]=list(s_y)                
+}
+
+max.length <- max(sapply(s_ys, length)); s_ys.df=do.call(cbind, lapply(s_ys, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) })) 
+s_ys.df[s_ys.df==-Inf]=NA;s_ys.df[s_ys.df==Inf]=NA
+
+
+x=1/(p+273.15);s_xs=NULL                
+for (i in 1:ncol(p)){          
+s_x=((d[i,2]/-d[i,1])*x[,i])                                                        #scaled inverse temperature
+s_xs[i]=list(s_x) 
+               }
+max.length <- max(sapply(s_xs, length)); s_xs.df=do.call(cbind, lapply(s_xs, function(.vec){ c(.vec, rep(NA, max.length - length(.vec))) }))                 
+s_xs.df[s_xs.df==-Inf]=NA              
+    s_xs.df=as.data.frame(s_xs.df)  
+
+#hey=out[97:128,]
+#hey=hey[order(hey$"r$Generic.variable"),]
+#hey=hey[order(hey$"r$taxonomic_domain"),]
+#rownames(hey)=NULL
+#1:3 archaea, 4:5 bacteria, 6:22 ecto, 26:29 endo, 30:32 virus
+#for (i in 1:10){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=0,col=1);par(new=T)}
+for (i in 1:2){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=0,col=1);par(new=T)}
+for (i in 3:10){plot(s_ys.df[,i]~s_xs.df[,i],ylim=c(0.9995,1.004),xlim=c(0.92,1.085),pch=0,col=4);par(new=T)}
+
+
+library(minpack.lm);library(kimisc)
+z2=function(params, x){
+-params[1]*log(x)+params[2]*x
+}
+xc=seq(0.92,1.085,0.0001)
+plot(xc,z2(c(1,1),xc),ylim=c(0.9995,1.004),xlim=c(0.92,1.085),type="l",lwd="1")
+
+
+#####################################################################################################################################################################
+
+#####################################################################################################################################################################
+
+
+
+#sorted by concavity, variable and taxa
+#1-19 enzyme concave
+#20-96 above concave
+#97-106 enzyme convex
+#107-128 above convex
+
+
+#1-archaea
+#2-bacteria
+#3-un euk
+#4-ecto
+#5-endo
+#(6-plant)
+#7-virus
+
+#0-enzyme rat
+#1-body size
+#2-carbon stock
+#3-dev time
+#4-eco flux
+#5-funct response
+#6-generation time
+#7-max germination
+#8-met rate
+#9-muta
+#10-performance
+#11-population density
+#12-pop flux
+#13-pop growth rate
+#14-energy use
+#15-richness
+#16-latency period
+#17-total abundance
+#18-mortality rat
+#19-fecundity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

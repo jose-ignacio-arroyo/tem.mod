@@ -1,0 +1,129 @@
+auhor and year	concavity	taxonomic_domain	taxonomic_domain_factor	specific_taxa_andor_ecosystem	source of data in the paper	organization_level	organization_level_factor	scale_with	Generic variable	specific_variable	units		taxonomic_group	comments	
+Battestin and Macedo2007	tent	unicel euk	5	Fungi; Paecilomyces variotii	Fig. 3 purified tannase	molecular	5	concentration	activity	relative activity %	dimensionless		euk	other curves not included	
+Brock 1978	tent	bacteria	2	cyanobacteria		community	2	area	Richness		number of morphotypes		prok		
+Brylawski	tent	ectotherm	3	Callinectes sapidus/Atlantic blue crab		individual	4	body size	Metabolic rate		gO2 /g×d		euk	other curves not included	
+Buck and Barnes	u	endotherm	4			individual	4	body size	Metabolic rate				euk		
+caroselli2015_t	u	ectotherm	3	Cnidaria; Balanophyllia Europaea	fig5, second plot from up to botton	individual	4	body size	Metabolic rate	Individual photosynthetic rate	chl a per zoox per cell-1		euk	other curves not included	*
+Chen et al. 2019	tent	archaea	1		fig3a	molecular	5	concentration	activity				prok		
+Cliffe	tent	endotherm	4		Bradypus6,3kg	individual	4	body size	Metabolic rate				euk		
+Corkrey_Mmusculus_t	tent	endotherm	4	Corkrey_Mmusculus_t	M, musculus	population	6	body size	Population growth rate				prok		
+corkrey-Archaea_Euryarchaeota_Euryarchaeota_Methanoculleus-submarinus_AN_H_860	tent	archaea	1	corkrey-Archaea_Euryarchaeota_Euryarchaeota_Methanoculleus-submarinus_AN_H_860		cell	1	body size	Population growth rate				prok		
+corkrey-Bacteria_Bacteria_Firmicutes_Clostridium-thermobutyricum_AN_H_23	tent	bacteria	2	corkrey-Bacteria_Bacteria_Firmicutes_Clostridium-thermobutyricum_AN_H_23	Bacteria_Bacteria_Proteobacteria_Pseudomonas-putida_A_H_520	population	6	body size	Population growth rate				prok		
+corkrey-Bacteria_Bacteria_Proteobacteria_Pseudomos-putida_A_H_520	tent	bacteria	2	corkrey-Bacteria_Bacteria_Proteobacteria_Pseudomos-putida_A_H_520		cell	1	body size	Population growth rate				euk		
+corkrey-Eukarya_Animalia_Arthropoda_Aleuroglyphus-ovatus_A_H_162	tent	ectotherm	3	corkrey-Eukarya_Animalia_Arthropoda_Aleuroglyphus-ovatus_A_H_162		population	6	body size	Population growth rate				euk		
+corkrey-Eukarya_Chromista_Foraminifera_Globigerinoides-sacculifer_A_H_824	tent	unicel euk	5	corkrey-Eukarya_Chromista_Foraminifera_Globigerinoides-sacculifer_A_H_824		cell	1	body size	Population growth rate				euk		
+Deb et al. 2013	tent	bacteria	2		Fig6	molecular	5	concentration	activity		u/ml		prok		
+dingha	tent	ectotherm	3	german cockroache		individual	4	body size	Metabolic rate				euk		
+Englund 2011	tent	ectotherm	3	Aphidius matricariae	fig1b	individual	4	body size	functional response	functional response; maximum intake rate	dimensionless		euk		
+esechie93_0dSm-1	tent	ectotherm	3			population	6	body size	Max germination				euk	PH 3	
+Esechie93_12.2dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_17.4dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_22.6dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_27.2dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_32.1dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_37.2dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+Esechie93_6.4dSm-1	tent	ectotherm	3	plant		population	6	body size	Max germination				euk		
+felleretal,1992-aha	tent	bacteria	2	a-Amylase from the Psychrotroph haloplanctis	Fig6 aha	molecular	5	concentration	activity	kcat	1/s		euk		
+felleretal,1992-baa_t	tent	bacteria	2	a-Amylase from the Psychrotroph haloplanctis	Fig6 baa	molecular	5	concentration	activity	kcat	1/s		euk		
+Franzmann 2005-f5-ferroplasma acidiphilum	tent	archaea	1		f5 f. acidiphilum	cell	1	body size	population flux				prok	other curves not included	
+Franzmann et al 2005_F. cyprexacerbatum	tent	archaea	1	F. cyprexacerbatum	fig5 Fcyprexacerbatum	population	6	body size	population flux	1/time to increase SO4-S to 3000 mgL-1	1/ time to oxidase 2000 (mg/L) Fe2+		prok		
+Franzmann et al 2005-Acidianus brierleyi	tent	archaea	1	Acidianus brierleyi		population	6	body size	population flux		6/ time to oxidase 2000 (mg/L) Fe2+		prok		
+Franzmann et al 2005-Acidithiobacillus caldus	tent	bacteria	2	Acidithiobacillus caldus		population	6	body size	population flux		4/ time to oxidase 2000 (mg/L) Fe2+		prok		
+Franzmann et al 2005-Acidithiobacillus ferrooxidans	tent	bacteria	2	Acidithiobacillus ferrooxidans		population	6	body size	population flux		2/ time to oxidase 2000 (mg/L) Fe2+		prok		
+Franzmann et al 2005-Acidithiobacillus thiooxidans	tent	bacteria	2	Acidithiobacillus thiooxidans		population	6	body size	population flux		3/ time to oxidase 2000 (mg/L) Fe2+		prok		
+Franzmann et al 2005-Sulfolobus metallicus	tent	archaea	1	Sulfolobus metallicus		population	6	body size	population flux		5/ time to oxidase 2000 (mg/L) Fe2+		euk		
+gaur2017	u	endotherm	4	human		population	6	area	Rate of energy use				euk	other curves not included	*
+giordano2005-fig3a-blackcircles	u	archaea	1	Sulfolobus solfataricus		molecular	5		activity_u	Hill coefficient			euk		
+giordano2005-fig4blackcircles	u	archaea	1	Sulfolobus solfataricus		molecular	5		activity_u	Hill coefficient			virus		
+gutierrez2016	u	ectotherm	3	Drosophila susukii	FIG2A	population	6	body size	Mortality rate		d-1		euk	other curves not included	
+Han et al 2008	tent	endotherm	4	homo sapiens		molecular	5	concentration	activity		KAT (kynurenine aminotransferase) II (Umol/min×*mg)		euk	other curves not included	
+Hingamp et al 2013	tent	virus	6		from Table 1 and Supplementary File 1 ismej201359x7.txt	community	2	area	Richness				euk		
+hoole2018_t	u	endotherm	4	Mammalia; Crocidura fFlavescens	fig2, second plot from up to botton	individual	4	body size	Metabolic rate		mWg-1		prok	other curves not included	
+Isaak and Hubert 2004	tent	ectotherm	3			population	6	body size	Population density		individuals/area		prok		
+Jones and Hough 1970	tent	unicel euk	5	Fungi; C. cerevisiae	fig3	cell	1	body size	Metabolic rate		O2 uptake (ul/mg cells hr)		euk	other curves not included	
+Jørgensen 1992	tent	bacteria	2			ecosystem	3	area	ecosystem flux		individuals×J/ area×s		euk	other curves not included	
+kashefi2003_t	u	archaea	1	Strain 121; Geogemma barossii		population	6	body size	Generation time	Generation time	h		prok		
+khankhan2010_ADULT_t	u	ectotherm	3	Insecta; Coccinella Septempunctata	fig1b, Th	individual	4	body size	functional response	handling rate			prok		
+kirk2018	u	ectotherm	3	daphnia	fig3a	population	6	body size	Mortality rate				prok		
+knoblauch&jorgensen-5b_	tent	bacteria	2		5b	cell	1	body size	Metabolic rate				prok		
+Knoblauch1999_1_B	tent	bacteria	2			cell	1	body size	Metabolic rate		individuals/area×J/s		euk		
+Knoblauch1999_2_B	tent	bacteria	2			cell	1	body size	Metabolic rate				prok	other curve	
+Knoblauch1999_4_B	tent	bacteria	2		4b	cell	1	body size	Metabolic rate				prok		
+Lee2013-fig4-left	u	endotherm	4	human	see here for example that huaman energy use scale with area: https://doi.org/10.1016/j.heliyon.2019.e01427 .	population	6	area	Rate of energy use				euk		
+Li-et-al-2015_AOA	tent	archaea	1	AOA	Table 3	community	2	area	Richness				euk		
+Li-et-al-2015_archaea	tent	archaea	1	archaea	Table 3	community	2	area	Richness				euk		
+Liu 2013	tent	ectotherm	3	plant		ecosystem	3	area	carbon stock		BCDa; carbon stock per area in all living biomass above the soil, including stems, branches, leaves and seeds; Mg C /ha		euk		
+Lloy2018 1c	u	ectotherm	3			population	6	body size	mutation	Recombination rate			euk		
+Lloy2018_1bblue_t	u	ectotherm	3	Arabidopsis thaliana		population	6	body size	mutation	Recombination rate			euk	other curves not included	
+lloyd_1b-red_T	u	ectotherm	3			population	6	body size	mutation	Recombination rate			euk		
+lloy-f1a_t	u	ectotherm	3	Arabidopsis thaliana		population	6	body size	mutation	Recombination rate			euk		
+ma2015_devrate	tent	ectotherm	3	aphid		individual	4	body size	Developmental time				euk	other curves not included	
+ma2015_fecundity	tent	ectotherm	3	aphid		individual	4	body size	Fecundity		1/day		euk		
+ma2015_growthrate	tent	ectotherm	3	aphid		individual	4	body size	Population growth rate				prok		
+mccainandsanders2010_fig2i	tent	ectotherm	3	salamanders central america	FIG2F	community	2	area	Richness		number of species		prok		
+mccaindsanders2010_fig2f	tent	ectotherm	3	salamanders sierra madre oriental	fig2I	community	2	area	Richness				prok		
+Milici2016_FL	tent	bacteria	2		FL	community	2	area	Richness				euk		
+Milici2016_LPA	tent	bacteria	2		LPA	community	2	area	Richness				euk		
+Milici2016_SPA	tent	bacteria	2		SPA	community	2	area	Richness				euk		
+Molnar 2017	tent	ectotherm	3	plathelminthes		individual	4	body size	performance	Swimming speed	Mm/sec		euk		
+Mullaney et al. 2012_C31G_t	tent	unicel euk	5	Fungi	f3-C31G	molecular	5	concentration	activity				euk		
+Mullaney et al. 2012_C31GC40G_t	tent	unicel euk	5	Fungi	f3-C31GC40G	molecular	5	concentration	activity				euk		
+Mullaney et al. 2012_C31GC40S_t	tent	unicel euk	5	Fungi	f3-C31GC40S	molecular	5	concentration	activity				prok		
+Mullaney et al. 2012_C40G_t	tent	unicel euk	5	Fungi	f3-C40G	molecular	5	concentration	activity				prok		
+Mullaney et al. 2012_WT_t	tent	unicel euk	5	Fungi	f3-WT	molecular	5	concentration	activity				prok		
+ouyang_aoa_as100	tent	archaea	1		Fig4b, ouyang_aoa_as100	ecosystem	3	area	ecosystem flux	AOA			prok		
+ouyang_aoa_as200	tent	archaea	1		Fig4b, ouyang_aoa_as200	ecosystem	3	area	ecosystem flux	AOA			prok		
+ouyang_aoa_compost	tent	archaea	1		Fig4b, ouyang_aoa_compost	ecosystem	3	area	ecosystem flux	AOA			prok		
+ouyang_aoa_control	tent	archaea	1		Fig4b, ouyang_aoa_control	ecosystem	3	area	ecosystem flux	AOA			prok		
+ouyang_aob_AS100	tent	bacteria	2		Fig4a, ouyang_aob_AS100	ecosystem	3	area	ecosystem flux	AOB			prok		
+ouyang_aob_AS200	tent	bacteria	2		Fig4a, ouyang_aob_AS200	ecosystem	3	area	ecosystem flux	AOB			euk	other curves not included	*
+ouyang_aob_compost	tent	bacteria	2		Fig4a, ouyang_aob_compost	ecosystem	3	area	ecosystem flux	AOB			prok		
+ouyang_aob_control	tent	bacteria	2		Fig4a, ouyang_aob_control	ecosystem	3	area	ecosystem flux	AOB			euk		
+Pan 2006	tent	endotherm	4	birds		community	2	area	Richness		number of species		euk		
+Piette et al. 2011	u	bacteria	2	Antarctic bacterium PhTAC125	fig1a	population	6	body size	Generation time		h		euk		
+porter_kearney_150woodrat_t	tent	ectotherm	3		150 woodrat	individual	4	body size	Metabolic rate				euk		
+porter_kearney_300woodrat_t	u	endotherm	4		300 woodrat	individual	4	body size	Metabolic rate				euk		
+rajasekaran&maheshwari1993_A,duponti_T	tent	unicel euk	5	A.duponti		cell	1	body size	Metabolic rate				euk		
+rajasekaran&maheshwari1993_A,phoenicis_t	tent	unicel euk	5	A.phoenicis		cell	1	body size	Metabolic rate				prok	other curves not included	
+rajasekaran&maheshwari1993_T,lanuginosus_t	tent	unicel euk	5	T.lanuginosus		cell	1	body size	Metabolic rate				prok	other curves not included	
+rajasekaran&maheshwari1993_T,viride_t	tent	unicel euk	5	T.viride		cell	1	body size	Metabolic rate				virus		
+Rousseletal2015_archaea	tent	archaea	1		Fig3b-archaea	community	2	area	Total community abundance		16S reads/ml		virus		
+Rousseletal2015_bacteria	tent	bacteria	2		Fig3b-bacteria	community	2	area	Total community abundance		16S reads/ml		virus		
+scholtisek_f1-triangle	u	virus	6		fig1-triangle	cell	1	body size	latent period	latent period			virus		
+scholtisek_square	u	virus	6		fig1-square	cell	1	body size	latent period	latent period			prok		
+Scholtisek-fig1circle	u	virus	6		fig1-circle	cell	1	body size	latent period	latent period			euk		
+Scholtissek&Rott1969_fig3	tent	virus	6		enzyme rate	molecular	5	concentration	activity	enzyme rate			prok		
+shelobolina2004_t	u	bacteria	2	Salmonella subterranean		population	6	body size	Generation time		t-1		euk	other curves not included	
+smith1936_Nature138.329â..330_t	u	ectotherm	3	Insecta; Drosophila mMelanogaster		population	6	body size	mutation	Crossover rate	%		euk	other curves not included	
+sunagawa	tent	bacteria	2		SOM	community	2	area	Total community abundance				euk	other curves not included	*
+Tait and Schiel 2013	tent	ectotherm	3	full assemblage	fig1a	ecosystem	3	area	ecosystem flux				prok	other curves not included	*
+Talley2002_meanT	tent	unicel euk	5	Fungi	Table 1	community	2	area	Richness				prok	other curves not included	*
+Tan et al 2015	tent	ectotherm	3	plant	fig5b	ecosystem	3	area	ecosystem flux	light-saturated ecosystem photosynthesis	NEEsat; umol/m2 s		euk		
+Tarpgaard et al, 2006	tent	bacteria	2		fig3a	cell	1	body size	Metabolic rate	Sulfate reduction rates	fmol /cell d		euk		
+Taylor 2017	tent	archaea	1		fig1 pendleton cropped AOA	ecosystem	3	area	ecosystem flux	Ecosystem nitrification	NO2- + NO3- umol/g soil d		euk		
+terentev63_f3center-birds_T	tent	endotherm	4	birds	fig3center	community	2	area	Richness				prok	other curves not included	*
+terentev63_f3left-mammals_T	tent	endotherm	4	mammals	fig3left	community	2	area	Richness				euk		
+terentev63_f3right-reptiles_T	tent	ectotherm	3	reptiles	fig3right	community	2	area	Richness				euk		
+Thomas and Caviccioli 2000	tent	archaea	1	M. thermophila EF-2	fig4a	molecular	5	concentration	activity		Specific activity GTP; 1/min		euk		
+Trytek et al. 2015	tent	unicel euk	5			ecosystem	3	area	ecosystem flux				virus	other curves not included	*
+Walczynskaâ 2016	tent	ectotherm	3	Annelida; Aelosoma hemprichi		individual	4	body size	body size	Body size	um2		euk		
+Whittaker and Feldhamer 2005	tent	endotherm	4	shrew		population	6	body size	Population density		number of individuals/area		euk		
+whittington2012-fig4a	u	ectotherm	3	teleost		molecular	5		activity_u	disociation constant			euk	other curves not included	*
+Winter et al 2008	tent	virus	6			community	2	area	Total community abundance		N×106 ml-1		euk		
+Yadav et al. 2011	tent	ectotherm	3		fig4	molecular	5	concentration	activity				euk		
+yamasaki_fig6a-25C-blackcircles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	fluorescent decay			euk		
+yamasaki_fig6d-15C-whitecircles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	fluorescent decay			euk	other curves not included	
+yamasaki_fig6d-25C-blackcircles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	fluorescent decay			euk	other curves not included	
+yamasaki_fig6d-35C-triangles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	fluorescent decay			euk	other curves not included	
+yamasaki_fig7b-blackcircles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	P700 reduction			euk	other curves not included	
+yamasaki_fig7b-triangles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	P700 reduction					
+yamasaki_fig7b-whitecircles	u	ectotherm	3	plant_wheat_Triticum aestivum		molecular	5		activity_u	P700 reduction					
+Yang and Wu 2006	tent	unicel euk	5	Fungi		molecular	5	concentration	activity	Relative rate	dimensionless				
+Yasuhara 2012	tent	ectotherm	3	cold sst, Modern planktic foraminiferal	Yasuhara, Moriaki; Hunt, Gene; Dowsett, Harry J.; Robinson, Marci M.; Stoll, Danielle K. (2012): Modern planktic foraminiferal diversity dataset. Dryad. Dataset. https://doi.org/10.5061/dryad.dc139/3	community	2	area	Richness		number of species				
+young1996-fig7.1.controls	u	endotherm	4	human;controls	Fig7.1 controls	individual	4	body size	Metabolic rate						
+young1996-fig7.1.inuits	u	endotherm	4	human;inuits	Fig7.1 inuits	individual	4	body size	Metabolic rate						
+Zakhartsev 2015	tent	unicel euk	5	Fungi	fig3a	population	6	body size	Population growth rate		1 over h				
+zhengetal2012_Adsorption-crosslinking-inmobilized-sterease_T	tent	endotherm	4	chicken	Adsorption-crosslinking-inmobilized-sterease	molecular	5	concentration	activity						
+zhengetal2012_Adsorption-inmobilized-sterease_T	tent	endotherm	4	chicken	Adsorption-inmobilized-sterease	molecular	5	concentration	activity						
+zhengetal2012_Adsorption-microcapsule-inmobilized-sterease_T	tent	endotherm	4	chicken	Adsorption-microcapsule-inmobilized-sterease	molecular	5	concentration	activity						
+zhengetal2012_free-sterease_t	tent	endotherm	4	chicken	free-sterease	molecular	5	concentration	activity						
